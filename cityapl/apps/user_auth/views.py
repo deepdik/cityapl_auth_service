@@ -78,3 +78,43 @@ class Logout(APIView):
         token_obj = Token.objects.filter(key=token)
         token_obj.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+class OTPVerifyView(APIView):
+    """
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        otp = request.data.get('otp')
+        user = request.user
+        # OTPAuth.validate_otp(user, otp)
+        if otp == '1234':
+            user.is_mobile_verify = True
+            user.save()
+            return Response({
+                    'detail':"OTP verified successfully"},
+                    status=status.HTTP_200_OK)
+
+        return Response({
+            'detail':"Invalid OTP"},
+            status=status.HTTP_400_BAD_REQUEST)
+
+
+class OTPGenerateView(APIView):
+    """
+    """
+    def post(self, request, *args, **kwargs):
+        otp = request.data.get('otp')
+        user = request.user
+        # OTPAuth.validate_otp(user, otp)
+        if otp == '1234':
+            user.is_mobile_verify = True
+            user.save()
+            return Response({
+                    'detail':"OTP verified successfully"},
+                    status=status.HTTP_200_OK)
+
+        return Response({
+            'detail':"Invalid OTP"},
+            status=status.HTTP_400_BAD_REQUEST)

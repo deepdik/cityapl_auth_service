@@ -86,7 +86,7 @@ REST_FRAMEWORK = {
 	'DEFAULT_VERSION': 'v1',
 	'ALLOWED_VERSIONS': ('v1', 'v2'),
 	'DEFAULT_PAGINATION_CLASS': 'cityapl.pagination.StandardResultsPageNumberPagination',
-	'EXCEPTION_HANDLER': 'cityapl.exceptions.custom_exception_handler',
+	# 'EXCEPTION_HANDLER': 'cityapl.exceptions.custom_exception_handler',
 }
 
 ############################# Static ###############################

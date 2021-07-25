@@ -7,7 +7,9 @@ from cityapl.apps.user_auth.views import (
     LoginView,
     SocialLoginView,
     SignupView,
-    Logout
+    Logout,
+    OTPVerifyView,
+    OTPGenerateView
 )
 
 
@@ -21,6 +23,8 @@ urlpatterns = [
 	path('user/social-login/', SocialLoginView.as_view(), name='social-login'),
 	path('user/signup/', SignupView.as_view(), name='signup'),
 	path('user/logout/', Logout.as_view(), name='logout'),
+	path('user/otp/verify/', OTPVerifyView.as_view(), name='otp-verify'),
+	path('user/otp/generate/', OTPGenerateView.as_view(), name='otp-generate'),
 ]
 
 urlpatterns += router.urls

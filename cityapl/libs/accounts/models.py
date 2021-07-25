@@ -88,8 +88,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         },
     )
     mobile_number = models.CharField(max_length=12, blank=True, null=True)
-    first_name = models.CharField(_('first name'), max_length=30, blank=True)
-    last_name = models.CharField(_('last name'), max_length=30, blank=True)
+    name = models.CharField(_('first name'), max_length=128, blank=True, null=True)
 
     account_type = models.CharField(max_length=2, choices=ACCOUNT_TYPE)
     social_id = models.CharField(max_length=255, blank=True, null=True)

@@ -69,10 +69,9 @@ class SignupSerializer(serializers.Serializer):
     """
     """
     password = serializers.CharField(min_length=8, required=True)
-    mobile_number = serializers.CharField(min_length=10, required=True)
+    mobile_number = serializers.CharField(min_length=10, required=False)
     email = serializers.EmailField(required=False)
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
+    name = serializers.CharField(required=False)
     device_token = serializers.CharField(required=True)
     device_type = serializers.ChoiceField(
         required=True, choices=User.ACCOUNT_TYPE)
@@ -80,33 +79,40 @@ class SignupSerializer(serializers.Serializer):
     def validate(self, attrs):
         """
         """
-        if not CustomValidators.validate_mobile(attrs.get('mobile_number')):
-            raise serializers.ValidationError({"detail": 'Invalid mobile Number'})
+        if attrs.get('mobile_number'):
+            if not CustomValidators.validate_mobile(attrs.get('mobile_number')):
+                raise serializers.ValidationError({"detail": 'Invalid mobile Number'})
 
-        qs = User.objects.filter(mobile_number=attrs.get('mobile_number'))
-        if qs.exists():
-            raise serializers.ValidationError(
-                {"detail": 'User is already register with this mobile number'})
-        
-        if attrs.get('email'):
-            qs = User.objects.filter(
-                email=attrs.get('email')
-            ).exclude(email='').exclude(email=None).distinct()
+            qs = User.objects.filter(mobile_number=attrs.get('mobile_number'))
             if qs.exists():
-                raise serializers.ValidationError({
-                    'detail':'User with this email is already exists'
-                    })
-
+                raise serializers.ValidationError(
+                    {"detail": 'User is already register with this mobile number'})
+            
+        elif attrs.get('email'):   
+                qs = User.objects.filter(
+                    email=attrs.get('email')
+                ).exclude(email='').exclude(email=None).distinct()
+                if qs.exists():
+                    raise serializers.ValidationError({
+                        'detail':'User with this email is already exists'
+                        })
+        else:
+            raise serializers.ValidationError({
+                'detail':'Email or Mobile is required'
+                })
+        username = attrs.get('email') if attrs.get('email') else attrs.get('mobile_number')
         user = User.objects.create(
                 email=attrs.get('email'),
                 mobile_number=attrs.get('mobile_number'),
-                first_name=attrs.get('device_token'),
-                last_name=attrs.get('device_token'),
-                username=attrs.get('mobile_number')
+                name=attrs.get('name'),
+                username=username,
+                account_type=User.NORMAL
+
             )
         # set user eync password
         user.set_password(attrs.get('password'))
         attrs =  AuthTokenSerializer.update_user_details(user, attrs)
+        attrs["auth_type"] = 1 if attrs.get('email') else 2
         return attrs
 
 
@@ -129,9 +135,10 @@ class SocialLoginSerializer(serializers.Serializer):
         if not user_info[0]:
             raise serializers.ValidationError({"detail": 'Invalid id token'})
 
+        print('-------------', user_info)
         qs = User.objects.filter(
-            social_id=user_info['sub'],
-            social_login_type=attrs.get('social_login_type')
+            social_id=user_info[1]['sub'],
+            social_account_type=attrs.get('social_login_type')
         )
         if qs.exists():
             user = qs.first()
@@ -139,16 +146,15 @@ class SocialLoginSerializer(serializers.Serializer):
                 msg = ('User account disabled.')
                 raise serializers.ValidationError({"detail": msg})
         else:
-            name = user_info['name'].split(" ", 1)
             # create user with this id
             user = User.objects.create(
-                email=user_info.get('email'),
-                mobile_number=user_info.get('mobile_number'),
-                social_id=user_info['sub'],
-                social_login_type=attrs.get('social_login_type'),
-                first_name=name[0],
-                last_name=name[-1],
-                username=user_info['sub']
+                email=user_info[1].get('email'),
+                mobile_number=user_info[1].get('mobile_number'),
+                social_id=user_info[1]['sub'],
+                name=user_info[1]['name'],
+                username=user_info[1]['sub'],
+                account_type=User.SOCIAL,
+                social_account_type=attrs.get('social_login_type')
             )
 
         attrs =  AuthTokenSerializer.update_user_details(user, attrs)
@@ -163,11 +169,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id', 'email', 'first_name', 'last_name','mobile_number'
-        )
-        read_only_fields = (
-            'id', 'email', 'first_name', 'last_name',  'user_type',
-            'username'
-        )
+            'email', 'name', 'mobile_number','is_mobile_verify',
+            'is_mail_verify', 'account_type', 'social_account_type'
 
-
+        )
