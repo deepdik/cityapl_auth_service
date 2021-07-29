@@ -100,7 +100,7 @@ class SignupSerializer(serializers.Serializer):
             raise serializers.ValidationError({
                 'detail':'Email or Mobile is required'
                 })
-        username = attrs.get('email') if attrs.get('email') else attrs.get('mobile_number')
+        username = attrs.get('mobile_number') if attrs.get('mobile_number') else attrs.get('email')
         user = User.objects.create(
                 email=attrs.get('email'),
                 mobile_number=attrs.get('mobile_number'),
