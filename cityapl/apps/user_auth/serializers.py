@@ -31,7 +31,7 @@ class AuthTokenSerializer(serializers.Serializer):
         qs = User.objects.filter(mobile_number=attrs.get('mobile_number'))
         if qs.exists():
             user = qs.first()
-            if not user.check_password(attrs.get('password')):
+            if user.password != attrs.get('password'):
                 user = None
         else:
             user = None
@@ -106,11 +106,13 @@ class SignupSerializer(serializers.Serializer):
                 mobile_number=attrs.get('mobile_number'),
                 name=attrs.get('name'),
                 username=username,
-                account_type=User.NORMAL
+                account_type=User.NORMAL,
+                password=attrs.get('password')
 
             )
         # set user eync password
-        user.set_password(attrs.get('password'))
+        print(attrs.get('password'))
+        # user.set_password(attrs.get('password'))
         attrs =  AuthTokenSerializer.update_user_details(user, attrs)
         attrs["auth_type"] = 1 if attrs.get('email') else 2
         return attrs
