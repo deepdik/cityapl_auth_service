@@ -9,8 +9,8 @@ from rest_framework import serializers, status
 from rest_framework.authtoken.models import Token
 
 from cityapl.libs.accounts.models import UserDevicesDetail
-from cityapl.apps.user_auth.utils import SocialOauth2, CustomValidators
- 
+from cityapl.apps.user_auth.utils import SocialOauth2, CustomValidators, OTPAuth
+
 
 User = get_user_model()
 
@@ -46,6 +46,10 @@ class AuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError({"detail": [msg]})
 
         attrs =  AuthTokenSerializer.update_user_details(user, attrs)
+        
+        if not user.is_mobile_verified:
+            # to verify user mobile
+            OTPAuth.generate_otp(user)
         return attrs
 
     @staticmethod
@@ -114,9 +118,11 @@ class SignupSerializer(serializers.Serializer):
         print(attrs.get('password'))
         # user.set_password(attrs.get('password'))
         attrs =  AuthTokenSerializer.update_user_details(user, attrs)
+
+        # to generate OTP. Need to make in another thread
+        OTPAuth.generate_otp(user)
         attrs["auth_type"] = 1 if attrs.get('email') else 2
         return attrs
-
 
 
 class SocialLoginSerializer(serializers.Serializer):
@@ -171,7 +177,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
-            'email', 'name', 'mobile_number','is_mobile_verify',
-            'is_mail_verify', 'account_type', 'social_account_type'
+            'email', 'name', 'mobile_number','is_mobile_verified',
+            'is_mail_verified', 'account_type', 'social_account_type'
 
         )

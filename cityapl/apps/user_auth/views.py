@@ -9,6 +9,7 @@ from rest_framework.response import Response
 
 from cityapl.apps.user_auth.serializers import (AuthTokenSerializer,
    SocialLoginSerializer, UserProfileSerializer, SignupSerializer)
+from cityapl.apps.user_auth.utils import OTPAuth
 
 
 class LoginView(APIView):
@@ -88,33 +89,39 @@ class OTPVerifyView(APIView):
     def post(self, request, *args, **kwargs):
         otp = request.data.get('otp')
         user = request.user
-        # OTPAuth.validate_otp(user, otp)
-        if otp == '1234':
-            user.is_mobile_verify = True
+        if user.is_mobile_verified:
+            return Response({
+            'detail':"Mobile is already verified"},
+            status=status.HTTP_400_BAD_REQUEST)
+        response, msg = OTPAuth.validate_otp(user, otp)
+
+        if response:
+            user.is_mobile_verified = True
             user.save()
             return Response({
-                    'detail':"OTP verified successfully"},
+                    'detail': msg},
                     status=status.HTTP_200_OK)
 
         return Response({
-            'detail':"Invalid OTP"},
+            'detail': msg},
             status=status.HTTP_400_BAD_REQUEST)
 
 
 class OTPGenerateView(APIView):
     """
+    To generate new OTP
+    (need to protect this API)
     """
-    def post(self, request, *args, **kwargs):
-        otp = request.data.get('otp')
-        user = request.user
-        # OTPAuth.validate_otp(user, otp)
-        if otp == '1234':
-            user.is_mobile_verify = True
-            user.save()
-            return Response({
-                    'detail':"OTP verified successfully"},
-                    status=status.HTTP_200_OK)
+    permission_classes = (permissions.IsAuthenticated,)
 
-        return Response({
-            'detail':"Invalid OTP"},
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_mobile_verified:
+            return Response({
+            'detail':"Mobile is already verified"},
             status=status.HTTP_400_BAD_REQUEST)
+        OTPAuth.generate_otp(user)
+        return Response({
+            'detail':"OTP sent successfully"},
+            status=status.HTTP_200_OK)
+

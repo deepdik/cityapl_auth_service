@@ -1,4 +1,5 @@
 import re
+import random
 import datetime
 from django.conf import settings
 
@@ -88,7 +89,7 @@ class OTPAuth:
 		UserOTP.objects.update_or_create(
 			user=user,
 			defaults={
-				'otp':OTP,
+				'otp':'1234',
 				'exp_time':datetime.datetime.now()+datetime.timedelta(minutes = 10)
 				}
 			)
@@ -101,8 +102,8 @@ class OTPAuth:
 		otp_qs = UserOTP.objects.filter(user=user)
 		if otp_qs.exists():
 			if otp_qs.first().exp_time > datetime.datetime.now():
-				if otp_qs.first().otp == otp:
-					return [True]
+				if otp_qs.first().otp == int(otp):
+					return [True, 'OTP verified successfully']
 				return [False, 'Invalid OTP']
 			return [False, 'OTP expired']
 		return [False, 'No OTP found']

@@ -100,8 +100,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_('Designates whether the user can log into this admin '
                     'site.'))
     social_account_type = models.CharField(max_length=2, choices=PROVIDER_TYPE)
-    is_mobile_verify = models.BooleanField(default=False)
-    is_mail_verify = models.BooleanField(default=False)
+    is_mobile_verified = models.BooleanField(default=False)
+    is_mail_verified = models.BooleanField(default=False)
     objects = UserManager()
 
 
