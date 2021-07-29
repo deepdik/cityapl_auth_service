@@ -88,15 +88,15 @@ class SignupSerializer(serializers.Serializer):
                 raise serializers.ValidationError(
                     {"detail": 'User is already register with this mobile number'})
             
-        elif attrs.get('email'):   
-                qs = User.objects.filter(
-                    email=attrs.get('email')
-                ).exclude(email='').exclude(email=None).distinct()
-                if qs.exists():
-                    raise serializers.ValidationError({
-                        'detail':'User with this email is already exists'
-                        })
-        else:
+        if attrs.get('email'):   
+            qs = User.objects.filter(
+                email=attrs.get('email')
+            ).exclude(email='').exclude(email=None).distinct()
+            if qs.exists():
+                raise serializers.ValidationError({
+                    'detail':'User with this email is already exists'
+                    })
+        if not attrs.get('email') and not attrs.get('mobile_number'):
             raise serializers.ValidationError({
                 'detail':'Email or Mobile is required'
                 })
