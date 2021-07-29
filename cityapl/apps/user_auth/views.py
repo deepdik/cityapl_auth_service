@@ -91,7 +91,7 @@ class OTPVerifyView(APIView):
         user = request.user
         if user.is_mobile_verified:
             return Response({
-            'detail':"Mobile is already verified"},
+            'detail':["Mobile is already verified"]},
             status=status.HTTP_400_BAD_REQUEST)
         response, msg = OTPAuth.validate_otp(user, otp)
 
@@ -99,11 +99,11 @@ class OTPVerifyView(APIView):
             user.is_mobile_verified = True
             user.save()
             return Response({
-                    'detail': msg},
+                    'detail': [msg]},
                     status=status.HTTP_200_OK)
 
         return Response({
-            'detail': msg},
+            'detail': [msg]},
             status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -118,10 +118,10 @@ class OTPGenerateView(APIView):
         user = request.user
         if user.is_mobile_verified:
             return Response({
-            'detail':"Mobile is already verified"},
+            'detail':["Mobile is already verified"]},
             status=status.HTTP_400_BAD_REQUEST)
         OTPAuth.generate_otp(user)
         return Response({
-            'detail':"OTP sent successfully"},
+            'detail':["OTP sent successfully"]},
             status=status.HTTP_200_OK)
 
