@@ -43,7 +43,7 @@ class AuthTokenSerializer(serializers.Serializer):
 
         else:
             msg = ("Invalid Login Credentials.")
-            raise serializers.ValidationError({"detail": [msg]})
+            raise serializers.ValidationError({"detail": msg})
 
         attrs =  AuthTokenSerializer.update_user_details(user, attrs)
         
