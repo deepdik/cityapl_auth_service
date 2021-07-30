@@ -38,7 +38,7 @@ INSTALLED_APPS = [
 INSTALLED_APPS += [
  
     'cityapl.libs.accounts',
-    # 'cityapl.apps.product',
+    'cityapl.apps.product',
     'cityapl.apps.user_auth'
 
 ]
