@@ -9,7 +9,8 @@ from rest_framework import serializers, status
 from rest_framework.authtoken.models import Token
 
 from cityapl.libs.accounts.models import UserDevicesDetail
-from cityapl.apps.user_auth.utils import SocialOauth2, CustomValidators, OTPAuth
+from cityapl.apps.user_auth.utils import (SocialOauth2, CustomValidators,
+    OTPAuth, JWTToken)
 
 
 User = get_user_model()
@@ -63,9 +64,9 @@ class AuthTokenSerializer(serializers.Serializer):
                 'device_token':attrs.get('device_token')
                 }
             )
-        token, _ = Token.objects.get_or_create(user=user)
+        token = JWTToken.generate(user)
         attrs['user'] = user
-        attrs['token'] = token.key
+        attrs['token'] = token
         return attrs
 
 

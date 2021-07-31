@@ -2,6 +2,7 @@
 """
 from django.urls import path, include 
 from rest_framework.routers import SimpleRouter
+from rest_framework_jwt.views import refresh_jwt_token, verify_jwt_token
 
 from cityapl.apps.user_auth.views import (
     LoginView,
@@ -15,10 +16,10 @@ from cityapl.apps.user_auth.views import (
 
 router = SimpleRouter()
 
-# router.register(r'token', TokenViewSet, basename='token')
 
 urlpatterns = [
-	# path('token/create/', TokenAPIView.as_view(), name='token-create'),
+	path('api-token-verify/', verify_jwt_token),
+	path('api-token-refresh/', refresh_jwt_token),
 	path('user/login/', LoginView.as_view(), name='login'),
 	path('user/social-login/', SocialLoginView.as_view(), name='social-login'),
 	path('user/signup/', SignupView.as_view(), name='signup'),

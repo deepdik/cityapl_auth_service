@@ -25,13 +25,11 @@ INSTALLED_APPS = [
     # modules
     'corsheaders',
     'rest_framework',
-    # 'rest_framework.authtoken',
     'django_filters',
     'debug_toolbar',
     'rest_framework.authtoken',
-    'django_extensions'
+    'django_extensions',
 
-    # 'storages',
 ]
 
 

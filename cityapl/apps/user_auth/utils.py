@@ -7,6 +7,10 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 from cityapl.apps.user_auth.models import UserOTP
+from rest_framework_jwt.settings import api_settings
+
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 
 class SendSMS:
@@ -96,6 +100,7 @@ class OTPAuth:
 
 		return OTP
 
+	@staticmethod
 	def validate_otp(user, otp):
 		"""
 		"""
@@ -107,3 +112,16 @@ class OTPAuth:
 				return [False, 'Invalid OTP']
 			return [False, 'OTP expired']
 		return [False, 'No OTP found']
+
+
+class JWTToken:
+	"""
+	"""
+	@staticmethod
+	def generate(user):
+		"""
+		"""
+		payload = jwt_payload_handler(user)
+		token = jwt_encode_handler(payload)
+
+		return token

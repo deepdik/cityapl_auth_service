@@ -9,7 +9,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'config.settings'
 
 from django.conf import settings
 
-app = Celery('spark_18')
+app = Celery('')
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.

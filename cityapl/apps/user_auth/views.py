@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from cityapl.apps.user_auth.serializers import (AuthTokenSerializer,
    SocialLoginSerializer, UserProfileSerializer, SignupSerializer)
 from cityapl.apps.user_auth.utils import OTPAuth
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 
 class LoginView(APIView):
@@ -72,12 +73,13 @@ class Logout(APIView):
     token must be passed in header
     """
     permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [JSONWebTokenAuthentication]
 
     def post(self, request, *args, **kwargs):
-        token = self.request.META.get('HTTP_AUTHORIZATION', None)
-        token = token.split()[1]
-        token_obj = Token.objects.filter(key=token)
-        token_obj.delete()
+        # token = self.request.META.get('HTTP_AUTHORIZATION', None)
+        # token = token.split()[1]
+        # token_obj = Token.objects.filter(key=token)
+        # token_obj.delete()
         return Response(status=status.HTTP_200_OK)
 
 
@@ -85,6 +87,7 @@ class OTPVerifyView(APIView):
     """
     """
     permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [JSONWebTokenAuthentication]
 
     def post(self, request, *args, **kwargs):
         otp = request.data.get('otp')
@@ -113,6 +116,8 @@ class OTPGenerateView(APIView):
     (need to protect this API)
     """
     permission_classes = (permissions.IsAuthenticated,)
+    authentication_classes = [JSONWebTokenAuthentication]
+
 
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -125,3 +130,21 @@ class OTPGenerateView(APIView):
             'detail':["OTP sent successfully"]},
             status=status.HTTP_200_OK)
 
+
+class ResetPasswordOTPSendView(APIView):
+    """
+    """
+    
+    pass
+
+
+class ResetPasswordView(APIView):
+    """
+    """
+    pass
+
+
+class ChangePasswordView(APIView):
+    """
+    """
+    pass
