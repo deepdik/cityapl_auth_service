@@ -92,11 +92,11 @@ REST_FRAMEWORK = {
 	# 'EXCEPTION_HANDLER': 'cityapl.exceptions.custom_exception_handler',
 }
 
-with open(BASE_DIR + '/config/keys/jwt-key.pub','r') as f:
-    PUBLIC_KEY = f.read()
+# with open(BASE_DIR + '/config/keys/jwt-key.pub','r') as f:
+#     PUBLIC_KEY = f.read()
 
-with open(BASE_DIR + '/config/keys/jwt-key','r') as f:
-    PRIVATE_KEY = f.read()
+# with open(BASE_DIR + '/config/keys/jwt-key','r') as f:
+#     PRIVATE_KEY = f.read()
 
 JWT_AUTH = {
     'JWT_ENCODE_HANDLER':
@@ -116,9 +116,9 @@ JWT_AUTH = {
 
     'JWT_SECRET_KEY': SECRET_KEY,
     'JWT_GET_USER_SECRET_KEY': None,
-    'JWT_PUBLIC_KEY': PUBLIC_KEY,
-    'JWT_PRIVATE_KEY': PRIVATE_KEY,
-    'JWT_ALGORITHM': 'RS256',
+    'JWT_PUBLIC_KEY': None,
+    'JWT_PRIVATE_KEY': None,
+    'JWT_ALGORITHM': 'HS256',
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': True,
     'JWT_LEEWAY': 0,
