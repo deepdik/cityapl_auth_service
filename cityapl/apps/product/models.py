@@ -34,7 +34,7 @@ class Category(models.Model):
     """
     id = models.AutoField(primary_key=True)
     categoryName = models.CharField(max_length=128, unique=True)
-    catImg = models.ImageField()
+    catImg = models.FileField(upload_to='product/category')
     isActive = models.BooleanField(default=True)
     createdAt = models.DateTimeField()
     updatedAt = models.DateTimeField()
@@ -54,7 +54,7 @@ class SubCategory(models.Model):
     category = models.ForeignKey(Category,
         on_delete=models.CASCADE, db_column='categoryId')
     subCategoryName = models.CharField(max_length=128, unique=True)
-    subCatImg = models.ImageField()
+    subCatImg = models.FileField(upload_to='product/subcategory')
     isActive = models.BooleanField(default=True)
     createdAt = models.DateTimeField()
     updatedAt = models.DateTimeField()
@@ -72,7 +72,7 @@ class Brand(models.Model):
     """
     id = models.AutoField(primary_key=True)
     brandName = models.CharField(max_length=128, unique=True)
-    brandImg = models.ImageField(blank=True, null=True)
+    brandImg = models.FileField(blank=True, null=True, upload_to='product/brand')
     isActive = models.BooleanField(default=True)
     description = models.TextField(blank=True, null=True)
     brandRating = models.FloatField(default=0.0)
@@ -94,7 +94,7 @@ class Vertical(models.Model):
     subCategory = models.ForeignKey(SubCategory,
         on_delete=models.CASCADE, db_column='subCategoryId',)
     verticalName = models.CharField(max_length=128, unique=True)
-    verticalImg = models.ImageField()
+    verticalImg = models.FileField(upload_to='product/vertical')
     isActive = models.BooleanField()
     createdAt = models.DateTimeField()
     updatedAt = models.DateTimeField()
@@ -110,7 +110,6 @@ class Vertical(models.Model):
 class Attribute(models.Model):
     """
     """
-
     id = models.AutoField(primary_key=True)
     attribute_name = models.CharField(max_length=255, unique=True)
     displayName = models.CharField(max_length=255)
@@ -183,7 +182,7 @@ class ProductImage(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product,
         on_delete=models.CASCADE, db_column='productId')
-    image = models.ImageField()
+    image = models.ImageField(upload_to='product/product')
     isMain = models.BooleanField(default=False)
     createdAt = models.DateTimeField()
     
