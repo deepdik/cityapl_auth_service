@@ -40,29 +40,29 @@ APP_LOGO = ''
 # }
 
 ##local Postgres database
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'myproject',
+#         'USER': 'myprojectuser',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+
+#  Server Postgresql
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'cityapl',
         'USER': 'myprojectuser',
         'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': '13.233.128.251',
+        'PORT': '5432',
     }
 }
-
-#  Server Postgresql
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'cityapl',
-#         'USER': 'myprojectuser',
-#         'PASSWORD': 'password',
-#         'HOST': '13.233.128.251',
-#         'PORT': '5432',
-#     }
-# }
 
 
 ########################## DRF Settings #############################

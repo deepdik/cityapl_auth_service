@@ -3,4 +3,5 @@ from django.contrib import admin
 
 
 admin.site.register([Category, SubCategory, Brand, Vertical, Product,
-	 Attribute])
+	 Attribute, BrandInVertical, AttributeSection, AttributeInVertical,
+	 AttributeInProduct, ProductImage])

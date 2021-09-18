@@ -67,24 +67,6 @@ class SubCategory(models.Model):
         db_table = 'subcategory'
 
 
-class Brand(models.Model):
-    """
-    """
-    id = models.AutoField(primary_key=True)
-    brandName = models.CharField(max_length=128, unique=True)
-    brandImg = models.FileField(blank=True, null=True, upload_to='product/brand')
-    isActive = models.BooleanField(default=True)
-    description = models.TextField(blank=True, null=True)
-    brandRating = models.FloatField(default=0.0)
-    createdAt = models.DateTimeField()
-    updatedAt = models.DateTimeField()
-    updatedBy = models.ForeignKey(settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,db_column='updatedById', related_name='brand_updated_by')
-    createdBy = models.ForeignKey(settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,db_column='createdById', related_name='brand_created_by')
-
-    class Meta:
-        db_table = 'brands'
 
 
 class Vertical(models.Model):
@@ -107,6 +89,53 @@ class Vertical(models.Model):
         db_table = 'vertical'
 
 
+class Brand(models.Model):
+    """
+    """
+    id = models.AutoField(primary_key=True)
+    brandName = models.CharField(max_length=128, unique=True)
+    brandImg = models.FileField(blank=True, null=True, upload_to='product/brand')
+    description = models.TextField(blank=True, null=True)
+
+    createdAt = models.DateTimeField()
+    updatedAt = models.DateTimeField()
+    updatedBy = models.ForeignKey(settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,db_column='updatedById', related_name='brand_updated_by')
+    createdBy = models.ForeignKey(settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,db_column='createdById', related_name='brand_created_by')
+
+    vertical = models.ManyToManyField(Vertical,
+        through='BrandInVertical')
+
+    class Meta:
+        db_table = 'brands'
+
+
+class BrandInVertical(models.Model):
+    """
+    """
+    id = models.AutoField(primary_key=True)
+    brand = models.ForeignKey(Brand,
+        on_delete=models.CASCADE, db_column='brandId')
+    vertical = models.ForeignKey(Vertical,
+        on_delete=models.CASCADE, db_column='verticalId')
+    isActive = models.BooleanField(default=True)
+    brandRating = models.FloatField(default=0.0)
+
+    class Meta:
+        db_table = 'brand_in_vertical'
+
+
+class AttributeSection(models.Model):
+    """
+    """
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'attribute_section'
+
+
 class Attribute(models.Model):
     """
     """
@@ -117,11 +146,31 @@ class Attribute(models.Model):
     isRequired = models.BooleanField(default=False)
     isMultiselect = models.BooleanField(default=False)
     options = ArrayField(models.CharField(max_length=200), blank=True)
-    vertical = models.ForeignKey(Vertical,
-        on_delete=models.CASCADE, db_column='verticalId')
+
+    parent_id = models.ForeignKey('self',
+        on_delete=models.CASCADE, db_column='parentVerticalId',
+        blank=True, null=True)
+    sectionType = models.ForeignKey(AttributeSection,
+        on_delete=models.CASCADE, db_column='sectionTypeId')
+
+    vertical = models.ManyToManyField(Vertical,
+        through='AttributeInVertical') 
 
     class Meta:
         db_table = 'attribute'
+
+
+class AttributeInVertical(models.Model):
+    """
+    """
+    id = models.AutoField(primary_key=True)
+    vertical = models.ForeignKey(Vertical,
+        on_delete=models.CASCADE, db_column='verticalId')
+    attribute = models.ForeignKey(Attribute,
+        on_delete=models.CASCADE, db_column='attributeId')
+
+    class Meta:
+        db_table = 'attribute_in_vertical'
 
 
 class Product(models.Model):
@@ -136,8 +185,8 @@ class Product(models.Model):
         on_delete=models.CASCADE, related_name='product', db_column='verticalId')
 
     name = models.CharField(max_length=255)
-    brand = models.ForeignKey(Vertical,
-        on_delete=models.CASCADE, related_name='product_brand')
+    brand = models.ForeignKey(Brand,
+        on_delete=models.CASCADE, related_name='product_brand', db_column='BrandId')
     description = models.TextField(blank=True, null=True)
     tags = models.TextField(blank=True, null=True)
     searchTags = models.TextField(blank=True, null=True)
