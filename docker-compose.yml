@@ -15,6 +15,7 @@ services:
     expose:
       - 8000
     restart: "on-failure"
+    image: docker-registry.cityapl.com/cityapl_auth_service
 
   nginx:
     build:
