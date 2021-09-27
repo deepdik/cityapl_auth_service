@@ -19,6 +19,7 @@ then
 	cd ..
 	sudo rm -rf ${SERVICE_NAME}
 	sudo docker image prune -a -f   
+fi
 
 git clone https://deepdik:${GIT_CRED}@github.com/deepdik/${SERVICE_NAME}.git
 cd ${SERVICE_NAME}
