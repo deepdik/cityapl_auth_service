@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: docker-registry.cityapl.com/cityapl_auth_service
     command: sh -c "python manage.py makemigrations &&
                     python manage.py migrate &&
                     python manage.py collectstatic --no-input &&
@@ -15,12 +16,12 @@ services:
     expose:
       - 8000
     restart: "on-failure"
-    image: docker-registry.cityapl.com/cityapl_auth_service
-
+    
   nginx:
     build:
       context: .
       dockerfile: config/nginx/Dockerfile
+    image: docker-registry.cityapl.com/nginx_cityapl_auth_service
     ports:
       - 81:80
       - 443:443
@@ -68,7 +69,6 @@ services:
     depends_on:
       - celery_worker
       - redis
-
 
 volumes:
   staticfiles:
