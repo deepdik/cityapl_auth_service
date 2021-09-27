@@ -194,3 +194,17 @@ EMAIL_USE_SSL = False
 
 SOCIAL_AUTH_GOOGLE_OAUTH_KEY = '961513181020-ll6lp4qe015ufmgi6udqk4q6qmul53fj.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH_SECRET = 'CoFFeTOJNoDgQxMJAJ2BcdGc'
+
+REDIS_CACHE = {
+        'CACHE_TYPE':'RedisCache',
+        'CACHE_REDIS_HOST':'redis',
+        'CACHE_REDIS_PORT': 6378,
+        'CACHE_REDIS_DB':0,
+        'CACHE_REDIS_URL':'redis://redis:6378/0',
+        'CACHE_DEFAULT_TIMEOUT':500
+    }
+
+
+CELERY_BROKER_URL= 'amqp://cityapl-rabbitmq:cityapl@168.138.113.89:5672//'
+CELERY_RESULT_BACKEND= 'rpc://'
+CELERY_ACKS_LATE = True
